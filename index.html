@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -1163,7 +1162,6 @@
   (function() {
     var overlay = document.getElementById('cookieOverlay');
     var acceptBtn = document.getElementById('cookieAccept');
-    var STORAGE_KEY = 'cookie_accepted_pico_placa_ads';
 
     function showModal() {
       overlay.classList.add('active');
@@ -1175,18 +1173,10 @@
       document.body.style.overflow = '';
     }
 
-    try {
-      if (!localStorage.getItem(STORAGE_KEY)) {
-        setTimeout(showModal, 700);
-      }
-    } catch (e) {
-      setTimeout(showModal, 700);
-    }
+    // Siempre mostrar el modal al cargar la página
+    setTimeout(showModal, 700);
 
     acceptBtn.addEventListener('click', function() {
-      try {
-        localStorage.setItem(STORAGE_KEY, 'true');
-      } catch (e) {}
       hideModal();
     });
   })();
