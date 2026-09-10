@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -547,6 +548,107 @@
     text-decoration: underline;
   }
 
+  /* COOKIE MODAL */
+  .cookie-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 1rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+  }
+
+  .cookie-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .cookie-modal {
+    background: #ffffff;
+    border: 1px solid rgba(14, 165, 233, 0.2);
+    border-radius: 20px;
+    padding: 2rem 1.75rem;
+    max-width: 440px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 25px 60px rgba(15, 23, 42, 0.25);
+    transform: translateY(20px) scale(0.96);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .cookie-overlay.active .cookie-modal {
+    transform: translateY(0) scale(1);
+  }
+
+  .cookie-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 1.25rem;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #0ea5e9, #14b8a6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 20px rgba(14, 165, 233, 0.35);
+  }
+
+  .cookie-icon svg {
+    width: 28px;
+    height: 28px;
+    stroke: white;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .cookie-modal h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+    color: #0f172a;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .cookie-modal p {
+    color: #64748b;
+    font-size: 0.92rem;
+    margin-bottom: 1.75rem;
+    line-height: 1.6;
+  }
+
+  .cookie-accept {
+    width: 100%;
+    padding: 0.95rem 1.5rem;
+    background: linear-gradient(135deg, #0ea5e9, #14b8a6);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.98rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 0.02em;
+    box-shadow: 0 8px 20px rgba(14, 165, 233, 0.3);
+    font-family: inherit;
+  }
+
+  .cookie-accept:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(14, 165, 233, 0.45);
+  }
+
+  .cookie-accept:active {
+    transform: translateY(0);
+  }
+
   /* RESPONSIVE */
   @media (max-width: 768px) {
     .header-nav {
@@ -619,6 +721,35 @@
     th, td {
       padding: 0.7rem 0.8rem;
       font-size: 0.78rem;
+    }
+
+    .cookie-modal {
+      padding: 1.75rem 1.35rem;
+      border-radius: 18px;
+    }
+
+    .cookie-icon {
+      width: 48px;
+      height: 48px;
+    }
+
+    .cookie-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .cookie-modal h3 {
+      font-size: 1.1rem;
+    }
+
+    .cookie-modal p {
+      font-size: 0.88rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .cookie-accept {
+      padding: 0.85rem 1.25rem;
+      font-size: 0.92rem;
     }
   }
 
@@ -1009,6 +1140,57 @@
   <p>Información basada en la Resolución 120963 de 2026 y comunicados oficiales de la Secretaría Distrital de Movilidad de Bogotá.</p>
   <p style="margin-top: 0.4rem;">Realiza siempre tu trámite en <a href="https://picoyplacasolidario.movilidadbogota.gov.co" target="_blank" rel="noopener">picoyplacasolidario.movilidadbogota.gov.co</a></p>
 </footer>
+
+<!-- COOKIE MODAL -->
+<div class="cookie-overlay" id="cookieOverlay" role="dialog" aria-modal="true" aria-labelledby="cookieTitle">
+  <div class="cookie-modal">
+    <div class="cookie-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5z"/>
+        <circle cx="8.5" cy="10.5" r="0.5" fill="white"/>
+        <circle cx="12.5" cy="15.5" r="0.5" fill="white"/>
+        <circle cx="15.5" cy="11.5" r="0.5" fill="white"/>
+        <circle cx="9.5" cy="15.5" r="0.5" fill="white"/>
+      </svg>
+    </div>
+    <h3 id="cookieTitle">Uso de cookies</h3>
+    <p>Este sitio utiliza cookies para mejorar tu experiencia de navegación y analizar el tráfico. Al continuar, aceptas su uso.</p>
+    <button class="cookie-accept" id="cookieAccept" type="button">Aceptar</button>
+  </div>
+</div>
+
+<script>
+  (function() {
+    var overlay = document.getElementById('cookieOverlay');
+    var acceptBtn = document.getElementById('cookieAccept');
+    var STORAGE_KEY = 'cookie_accepted_pico_placa_ads';
+
+    function showModal() {
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function hideModal() {
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    try {
+      if (!localStorage.getItem(STORAGE_KEY)) {
+        setTimeout(showModal, 700);
+      }
+    } catch (e) {
+      setTimeout(showModal, 700);
+    }
+
+    acceptBtn.addEventListener('click', function() {
+      try {
+        localStorage.setItem(STORAGE_KEY, 'true');
+      } catch (e) {}
+      hideModal();
+    });
+  })();
+</script>
 
 </body>
 </html>
